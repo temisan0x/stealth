@@ -14,7 +14,7 @@ export function EmailList({
   const filtered = emails.filter((e) => folder === "starred" ? e.starred : e.folder === folder || folder === "inbox");
 
   return (
-    <section className="glass relative m-3 flex h-[calc(100vh-1.5rem-3.5rem-0.75rem)] w-full flex-col overflow-hidden rounded-2xl md:w-[420px] md:shrink-0">
+    <section className="glass relative m-3 flex h-[calc(100vh-1.5rem-3.5rem-0.75rem)] w-full flex-col overflow-hidden rounded-2xl md:w-[360px] md:shrink-0">
       <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
         <div>
           <h2 className="text-sm font-semibold capitalize tracking-tight text-foreground">{folder}</h2>
@@ -35,7 +35,7 @@ export function EmailList({
         </div>
       </div>
 
-      <ul className="scrollbar-thin flex-1 overflow-y-auto p-2">
+      <ul className="scrollbar-thin flex-1 overflow-y-auto p-2 divide-y divide-white/[0.04]">
         {filtered.map((e, idx) => {
           const active = selectedId === e.id;
           return (
@@ -49,9 +49,11 @@ export function EmailList({
                 onClick={() => onSelect(e.id)}
                 whileTap={{ scale: 0.995 }}
                 className={cn(
-                  "group relative mb-1 flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition",
+                  "group relative flex w-full items-start gap-3 rounded-xl px-3 text-left transition",
                   "hover:bg-white/[0.04]",
-                  active && "bg-white/[0.14] backdrop-blur-xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7),0_0_0_1px_oklch(1_0_0_/_0.12)] -translate-y-px"
+                  active
+                    ? "my-1.5 py-3 bg-white/[0.14] backdrop-blur-xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7),0_0_0_1px_oklch(1_0_0_/_0.12)] -translate-y-px"
+                    : "py-2"
                 )}
               >
                 {active && (
@@ -61,9 +63,16 @@ export function EmailList({
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
-                <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[11px] font-medium text-white/90"
-                     style={{ background: `linear-gradient(135deg, ${e.avatarColor}, #1a1a1d)` }}>
-                  {e.from.split(" ").map(n => n[0]).slice(0,2).join("")}
+                <div className={cn(
+                  "relative shrink-0 overflow-hidden rounded-full ring-1 ring-white/10",
+                  active ? "h-9 w-9" : "h-7 w-7"
+                )}>
+                  <img
+                    src={`https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(e.from)}&backgroundColor=1a1a1d`}
+                    alt={e.from}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
                   {e.unread && <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-[oklch(0.9_0.005_270)] ring-2 ring-[oklch(0.18_0.005_270)]" />}
                 </div>
                 <div className="relative min-w-0 flex-1">
@@ -76,10 +85,12 @@ export function EmailList({
                   <div className={cn("truncate text-[13px]", e.unread ? "text-foreground/95" : "text-foreground/75")}>
                     {e.subject}
                   </div>
-                  <div className="mt-0.5 flex items-center gap-2">
-                    <p className="truncate text-[11.5px] text-muted-foreground">{e.preview}</p>
-                  </div>
-                  {(e.labels?.length || e.attachments?.length || e.starred) && (
+                  {active && (
+                    <div className="mt-0.5 flex items-center gap-2">
+                      <p className="truncate text-[11.5px] text-muted-foreground">{e.preview}</p>
+                    </div>
+                  )}
+                  {active && (e.labels?.length || e.attachments?.length || e.starred) && (
                     <div className="mt-1.5 flex items-center gap-1.5">
                       {e.starred && <Star className="h-3 w-3 fill-[oklch(0.85_0.005_270)] text-[oklch(0.85_0.005_270)]" />}
                       {e.attachments?.length ? <Paperclip className="h-3 w-3 text-muted-foreground" /> : null}
