@@ -18,6 +18,7 @@ import {
   Trash2,
   type LucideIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { EventMailCard } from "@/features/calendar";
 import type { Email } from "./data";
 
@@ -31,7 +32,7 @@ export function EmailView({ email }: { email: Email | null }) {
   }, [email?.id]);
 
   return (
-    <section className="mail-reader-atmosphere relative m-3 ml-0 flex h-[calc(100vh-3.5rem-1.5rem)] flex-1 flex-col overflow-hidden rounded-lg">
+    <section className="mail-reader-atmosphere relative m-3 ml-0 flex h-[calc(100vh-3.5rem-1.5rem)] flex-1 flex-col overflow-hidden rounded-[8px]">
       <AnimatePresence mode="wait">
         {!email ? (
           <motion.div
@@ -58,7 +59,7 @@ export function EmailView({ email }: { email: Email | null }) {
             transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
             className="flex h-full flex-col"
           >
-            <div className="grid grid-cols-[minmax(180px,280px)_1fr_auto] items-center gap-3 border-b border-white/5 px-4 py-2.5">
+            <div className="grid grid-cols-[minmax(180px,280px)_1fr_auto_auto] items-center gap-3 border-b border-white/5 px-4 py-2.5">
               <SenderIdentity email={email} compact />
 
               <div className="flex min-w-0 items-center justify-center gap-1">
@@ -77,6 +78,22 @@ export function EmailView({ email }: { email: Email | null }) {
                   </motion.button>
                 ))}
               </div>
+
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                onClick={() => setSmartReplyOpen((open) => !open)}
+                className={cn(
+                  "mail-reader-meta flex h-8 items-center gap-2 rounded-md border px-3 text-[11px] font-medium text-foreground/92 transition",
+                  smartReplyOpen
+                    ? "border-white/[0.2] bg-white/[0.09]"
+                    : "border-white/[0.13] bg-white/[0.055] hover:border-white/[0.2] hover:bg-white/[0.09]"
+                )}
+              >
+                <span className="grid h-4 w-4 place-items-center rounded-sm border border-white/[0.12] bg-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.13)]">
+                  <Sparkles className="h-2.5 w-2.5 text-foreground/80" />
+                </span>
+                <span className="hidden sm:inline">Smart</span>
+              </motion.button>
 
               <div className="flex items-center justify-end gap-1">
                 {[Archive, Trash2, Star].map((Icon, i) => (
@@ -150,22 +167,22 @@ export function EmailView({ email }: { email: Email | null }) {
             <AnimatePresence>
               {smartReplyOpen ? (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  initial={{ opacity: 0, y: -8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.96 }}
                   transition={{ duration: 0.18 }}
-                  className="absolute bottom-[98px] right-4 z-20 w-[min(330px,calc(100%-2rem))] rounded-md border border-white/[0.12] bg-[oklch(0.13_0.005_270_/_0.78)] p-3 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-2xl"
+                  className="glass-tile relative mx-5 mb-4 w-auto max-w-[520px] rounded-md p-3"
                 >
-                  <div className="mail-reader-meta mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                    <Sparkles className="h-3 w-3" /> Smart reply
+                  <div className="mail-reader-meta mb-3 flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <Sparkles className="h-3 w-3" /> Smart reply suggestions
                   </div>
-                  <div className="grid gap-1.5">
+                  <div className="grid gap-2">
                     {smartReplies.map((reply) => (
                       <motion.button
                         key={reply}
-                        whileHover={{ x: -2 }}
+                        whileHover={{ x: 2 }}
                         whileTap={{ scale: 0.98 }}
-                        className="rounded-md border border-white/[0.08] bg-white/[0.045] px-3 py-2 text-left text-xs leading-5 text-foreground/90 transition hover:border-white/[0.14] hover:bg-white/[0.08]"
+                        className="rounded-md border border-white/[0.1] bg-white/[0.05] px-3 py-2 text-left text-xs leading-5 text-foreground/88 transition hover:border-white/[0.16] hover:bg-white/[0.1]"
                       >
                         {reply}
                       </motion.button>
@@ -174,17 +191,6 @@ export function EmailView({ email }: { email: Email | null }) {
                 </motion.div>
               ) : null}
             </AnimatePresence>
-
-            <motion.button
-              whileTap={{ scale: 0.94 }}
-              onClick={() => setSmartReplyOpen((open) => !open)}
-              className="mail-reader-meta absolute bottom-10 right-4 z-30 flex h-11 w-[168px] items-center gap-3 rounded-md border border-white/[0.13] bg-white/[0.055] px-4 text-xs font-medium text-foreground/92 shadow-[0_18px_54px_-28px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.14),inset_0_-1px_0_rgba(0,0,0,0.18)] backdrop-blur-2xl transition hover:border-white/[0.2] hover:bg-white/[0.09]"
-            >
-              <span className="grid h-5 w-5 place-items-center rounded-md border border-white/[0.12] bg-white/[0.06] shadow-[inset_0_1px_0_rgba(255,255,255,0.13)]">
-                <Sparkles className="h-3.5 w-3.5 text-foreground/80" />
-              </span>
-              <span>Smart reply</span>
-            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
