@@ -9,7 +9,7 @@ import { EmailView } from "@/components/mail/EmailView";
 import { Compose } from "@/components/mail/Compose";
 import { CommandPalette } from "@/components/mail/CommandPalette";
 import { SettingsModal } from "@/components/mail/SettingsModal";
-import { emails } from "@/components/mail/data";
+import { emails, getEmailsForFolder, mailFolders, type MailFolder } from "@/components/mail/data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -77,6 +77,7 @@ function MailApp() {
       <div className="flex min-h-screen">
         <Sidebar
           active={folder}
+          counts={folderCounts}
           onSelect={(f) => {
             setFolder(f);
             setCustomFolder(null);

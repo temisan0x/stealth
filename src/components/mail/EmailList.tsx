@@ -17,9 +17,9 @@ export function EmailList({
   folder: MailFolder;
 }) {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
+  const folderLabel = getFolderLabel(folder);
   
-  const filtered = emails
-    .filter((e) => folder === "starred" ? e.starred : e.folder === folder || folder === "inbox")
+  const filtered = getEmailsForFolder(emails, folder)
     .filter((e) => {
       if (activeTab === "unread") return e.unread;
       if (activeTab === "flagged") return e.starred;
@@ -33,13 +33,13 @@ export function EmailList({
           <h2 className="text-[13px] font-semibold leading-5 tracking-normal text-foreground">{folderLabel}</h2>
           <p className="text-[11px] leading-4 text-muted-foreground">{filtered.length} conversations</p>
         </div>
-        <div className="flex items-center gap-1 rounded-lg border border-white/5 bg-white/[0.03] p-0.5 text-[11px]">
+        <div className="flex items-center gap-1 rounded-md border border-white/5 bg-white/[0.03] p-0.5 text-[11px]">
           {(["all", "unread", "flagged"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setActiveTab(t)}
               className={cn(
-                "rounded-md px-2.5 py-1 transition capitalize",
+                "rounded px-2.5 py-1 transition capitalize",
                 activeTab === t ? "bg-white/[0.08] text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >

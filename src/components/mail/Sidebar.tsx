@@ -1,8 +1,29 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Inbox, Star, FileText, Send, ShieldAlert, Archive, Trash2,
-  Hash, Plus, ChevronsLeft, ChevronsRight, Sparkles, Pencil, X
+  Archive,
+  CalendarClock,
+  ChevronsLeft,
+  ChevronsRight,
+  Clock3,
+  FileText,
+  Hash,
+  Inbox,
+  Lock,
+  Mail,
+  Pencil,
+  Plus,
+  ReceiptText,
+  Send,
+  SendHorizontal,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Trash2,
+  Users,
+  X,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MailFolder } from "./data";
@@ -38,6 +59,13 @@ const storageItems: SidebarItem[] = [
   { key: "trash", label: "Trash", icon: Trash2 },
 ];
 
+const sections: { title?: string; items: SidebarItem[] }[] = [
+  { items: mailItems },
+  { title: "Protocol", items: protocolItems },
+  { title: "Delivery", items: deliveryItems },
+  { title: "Storage", items: storageItems },
+];
+
 const defaultFolders = [
   { name: "Clients", color: "oklch(0.85 0.005 270)" },
   { name: "Investors", color: "oklch(0.75 0.005 270)" },
@@ -53,7 +81,7 @@ const folderColors = [
 ];
 
 export function Sidebar({
-  active, onSelect, collapsed, onToggle, onCompose, customFolder, onSelectCustomFolder,
+  active, counts, onSelect, collapsed, onToggle, onCompose, customFolder, onSelectCustomFolder,
 }: {
   active: MailFolder;
   counts: Partial<Record<MailFolder, number>>;

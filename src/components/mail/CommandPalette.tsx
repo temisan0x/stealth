@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Archive, Inbox, Mail, Pencil, Search, Send, Settings, ShieldCheck, Star } from "lucide-react";
+import { Archive, Inbox, Pencil, Search, Send, Settings, Star, type LucideIcon } from "lucide-react";
+import type { MailFolder } from "./data";
 
 type CommandItem = {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   hint: string;
-  action: string;
+  action: "compose" | "inbox" | "starred" | "sent" | "archive" | "settings";
 };
 
 const items: CommandItem[] = [
@@ -22,7 +23,7 @@ type CommandPaletteProps = {
   open: boolean;
   onClose: () => void;
   onCompose?: () => void;
-  onNavigate?: (folder: string) => void;
+  onNavigate?: (folder: MailFolder) => void;
   onArchive?: () => void;
   onOpenSettings?: () => void;
 };

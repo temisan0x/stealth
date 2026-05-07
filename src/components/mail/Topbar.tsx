@@ -1,6 +1,21 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Command, Bell, Settings, Filter, Check, Paperclip, Calendar, User, LogOut, RefreshCw } from "lucide-react";
+import {
+  Bell,
+  Calendar,
+  Check,
+  Clock3,
+  Command,
+  Filter,
+  LogOut,
+  Paperclip,
+  RefreshCw,
+  Search,
+  Settings,
+  ShieldCheck,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotificationsPanel } from "./NotificationsPanel";
 
@@ -9,6 +24,12 @@ type TopbarProps = {
   onOpenSettings: () => void;
   onShowToast: (message: string) => void;
 };
+
+const quickActions: { label: string; value: string; icon: LucideIcon }[] = [
+  { label: "Proofs", value: "2", icon: ShieldCheck },
+  { label: "Later", value: "5", icon: Clock3 },
+  { label: "Files", value: "9", icon: Paperclip },
+];
 
 export function Topbar({ onOpenPalette, onOpenSettings, onShowToast }: TopbarProps) {
   const [focused, setFocused] = useState(false);
@@ -280,6 +301,22 @@ function IconBtn({
       )}
     >
       {children}
+    </motion.button>
+  );
+}
+
+function QuickAction({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.94 }}
+      aria-label={label}
+      className="group flex h-9 items-center gap-2 rounded-md border border-white/[0.07] bg-white/[0.035] px-2.5 text-xs text-muted-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.045)] transition hover:border-white/[0.12] hover:bg-white/[0.07] hover:text-foreground"
+    >
+      <Icon className="h-4 w-4" />
+      <span className="hidden lg:inline">{label}</span>
+      <span className="rounded border border-white/[0.08] bg-black/20 px-1.5 py-0.5 font-mono text-[10px] text-foreground/80">
+        {value}
+      </span>
     </motion.button>
   );
 }
