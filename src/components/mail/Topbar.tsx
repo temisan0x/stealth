@@ -215,24 +215,32 @@ export function Topbar({
                       </button>
                     ))}
 
-                  {(filters.unreadOnly || filters.hasAttachments || filters.dateRange !== "all") && (
-                    <>
-                      <div className="my-2 border-t border-white/5" />
-                      <button
-                        onClick={() => setFilters({ unreadOnly: false, hasAttachments: false, dateRange: "all" })}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-white/[0.04] hover:text-foreground"
-                      >
-                        <RefreshCw className="h-3.5 w-3.5" />
-                        Clear filters
-                      </button>
-                    </>
-                  )}
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>,
-          document.body
-        )}
+                    {(filters.unreadOnly ||
+                      filters.hasAttachments ||
+                      filters.dateRange !== "all") && (
+                      <>
+                        <div className="my-2 border-t border-white/5" />
+                        <button
+                          onClick={() =>
+                            onFiltersChange({
+                              unreadOnly: false,
+                              hasAttachments: false,
+                              dateRange: "all",
+                            })
+                          }
+                          className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition hover:bg-white/[0.04] hover:text-foreground"
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          Clear filters
+                        </button>
+                      </>
+                    )}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>,
+            document.body,
+          )}
 
         {/* Notifications */}
         <div ref={notificationsRef} className="relative">
@@ -251,6 +259,7 @@ export function Topbar({
           open={notificationsOpen}
           onClose={() => setNotificationsOpen(false)}
           anchorRect={notifRect}
+          onViewAll={onViewNotifications}
         />
 
         {/* Settings */}
