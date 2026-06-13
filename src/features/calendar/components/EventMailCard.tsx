@@ -82,9 +82,15 @@ export function EventMailCard({
               <span className="truncate">{event.location}</span>
             </div>
           </div>
-          <button className="mail-reader-meta inline-flex items-center gap-1 rounded-md bg-black/60 px-2.5 py-1.5 text-[9px] font-medium text-foreground transition hover:bg-black/75">
-            <Plus className="h-2.5 w-2.5" />
-            Add
+          <button
+            onClick={() => {
+              setAdded(true);
+              onAdd?.(event);
+            }}
+            className="mail-reader-meta inline-flex items-center gap-1 rounded-md bg-black/60 px-2.5 py-1.5 text-[9px] font-medium text-foreground transition hover:bg-black/75"
+          >
+            {added ? <Check className="h-2.5 w-2.5" /> : <Plus className="h-2.5 w-2.5" />}
+            {added ? "Added" : "Add"}
           </button>
         </div>
       </div>

@@ -35,6 +35,7 @@ export type EmailViewActions = {
   onApproveSender?: (email: Email) => void;
   onBlockSender?: (email: Email) => void;
   onShowToast?: (message: string) => void;
+  onAddEvent?: (email: Email) => void;
 };
 
 export function EmailView({ email, actions = {} }: { email: Email | null; actions?: EmailViewActions }) {
