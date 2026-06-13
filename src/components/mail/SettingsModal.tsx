@@ -211,10 +211,92 @@ function NotificationSettings({
         <p className="mt-1 text-xs text-muted-foreground">Configure how you receive alerts</p>
       </div>
       <div className="space-y-4">
-        <SettingsToggle label="Email notifications" description="Receive email for new messages" defaultChecked />
-        <SettingsToggle label="Desktop notifications" description="Show browser notifications" defaultChecked />
-        <SettingsToggle label="Sound" description="Play a sound for new messages" />
+        <SettingsToggle
+          label="Email notifications"
+          description="Receive email for new messages"
+          checked={preferences.emailNotifications}
+          onChange={(checked) => onChange({ ...preferences, emailNotifications: checked })}
+        />
+        <SettingsToggle
+          label="Desktop notifications"
+          description="Show browser notifications"
+          checked={preferences.desktopNotifications}
+          onChange={(checked) => onChange({ ...preferences, desktopNotifications: checked })}
+        />
+        <SettingsToggle
+          label="Sound"
+          description="Play a sound for new messages"
+          checked={preferences.sound}
+          onChange={(checked) => onChange({ ...preferences, sound: checked })}
+        />
       </div>
+    </div>
+  );
+}
+
+function InboxSettings({
+  preferences,
+  onChange,
+}: {
+  preferences: UiPreferences;
+  onChange: (preferences: UiPreferences) => void;
+}) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-sm font-medium text-foreground">Inbox control</h3>
+        <p className="mt-1 text-xs text-muted-foreground">Choose how unknown senders reach you.</p>
+      </div>
+      <div className="grid gap-2">
+        {[
+          {
+            value: "request",
+            label: "Request approval",
+            description: "Hold unknown senders for review.",
+          },
+          {
+            value: "verified",
+            label: "Verified only",
+            description: "Accept verified identities with postage.",
+          },
+          {
+            value: "block",
+            label: "Trusted contacts only",
+            description: "Reject every unknown sender.",
+          },
+        ].map((policy) => (
+          <button
+            key={policy.value}
+            onClick={() =>
+              onChange({
+                ...preferences,
+                unknownSenders: policy.value as UiPreferences["unknownSenders"],
+              })
+            }
+            className={cn(
+              "rounded-xl border p-3 text-left transition",
+              preferences.unknownSenders === policy.value
+                ? "border-emerald-200/20 bg-emerald-200/[0.06]"
+                : "border-white/10 bg-white/[0.025] hover:bg-white/[0.05]",
+            )}
+          >
+            <span className="block text-sm font-medium text-foreground">{policy.label}</span>
+            <span className="mt-1 block text-xs text-muted-foreground">{policy.description}</span>
+          </button>
+        ))}
+      </div>
+      <label className="block">
+        <span className="text-xs text-muted-foreground">Minimum postage</span>
+        <div className="mt-1 flex items-center rounded-lg border border-white/10 bg-white/[0.04] px-3">
+          <input
+            value={preferences.minimumPostage}
+            onChange={(event) => onChange({ ...preferences, minimumPostage: event.target.value })}
+            inputMode="decimal"
+            className="w-full bg-transparent py-2 text-sm text-foreground outline-none"
+          />
+          <span className="text-xs text-muted-foreground">XLM</span>
+        </div>
+      </label>
     </div>
   );
 }
