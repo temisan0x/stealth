@@ -193,14 +193,21 @@ function MailApp() {
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setPaletteOpen((v) => !v); }
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") { e.preventDefault(); openCompose(); }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        openCompose();
+      }
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
   }, []);
 
   useEffect(() => {
+    if (customFolder) return;
     if (!visibleEmails.some((email) => email.id === selectedId)) {
       setSelectedId(visibleEmails[0]?.id ?? null);
     }
