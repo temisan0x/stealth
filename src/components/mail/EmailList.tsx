@@ -67,7 +67,7 @@ export function EmailList({
                 "relative rounded-[5px] px-2.5 py-1 font-medium transition capitalize",
                 activeTab === t
                   ? "bg-gradient-to-b from-white/[0.12] to-white/[0.06] text-foreground shadow-[0_4px_12px_-6px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.16)]"
-                  : "text-muted-foreground hover:text-foreground hover:bg-white/[0.04]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-white/[0.04]",
               )}
             >
               {t}
@@ -76,7 +76,15 @@ export function EmailList({
         </div>
       </div>
 
-      <ul className="scrollbar-thin relative z-10 flex-1 space-y-2 overflow-y-auto p-2.5">
+      <ul
+        className="scrollbar-thin relative z-10 flex-1 overflow-y-auto"
+        style={{
+          padding: "var(--mail-list-padding)",
+          display: "grid",
+          alignContent: "start",
+          gap: "var(--mail-list-gap)",
+        }}
+      >
         {filtered.length === 0 && (
           <li className="px-3 py-10 text-center text-xs text-muted-foreground">
             No conversations in {folderLabel.toLowerCase()} yet.
