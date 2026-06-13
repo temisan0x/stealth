@@ -46,13 +46,17 @@ export function RightPanel({
       <Card>
         <SectionHeader icon={Sparkles} title="AI assistant" badge="beta" />
         <div className="mt-3 rounded-xl border border-white/10 bg-black/20 p-3 text-xs text-foreground/80">
-          {email
-            ? `Summary: ${email.from} is sharing the latest direction on "${email.subject}". Action items inferred.`
-            : "Pick a thread and I'll summarize it, suggest replies, and extract action items."}
+          {summary ??
+            (email
+              ? `${email.from} is sharing the latest direction on "${email.subject}".`
+              : "Pick a thread and I'll summarize it, suggest replies, and extract action items.")}
         </div>
         <div className="mt-3 flex items-center gap-2">
           <input
-            placeholder="Ask AI to draft a reply…"
+            value={prompt}
+            onChange={(event) => setPrompt(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && draftReply()}
+            placeholder="Ask AI to draft a reply..."
             className="glow-ring h-9 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 text-xs placeholder:text-muted-foreground/70"
           />
           <motion.button whileTap={{ scale: 0.94 }} className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/[0.06] text-foreground transition hover:bg-white/[0.1]">
