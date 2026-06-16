@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AmbientBackground } from "@/components/mail/AmbientBackground";
+import { BulkConfirmDialog } from "@/components/mail/BulkConfirmDialog";
 import { Sidebar } from "@/components/mail/Sidebar";
 import { Topbar } from "@/components/mail/Topbar";
 import { EmailList } from "@/components/mail/EmailList";
@@ -10,6 +11,15 @@ import type { ComposeSubmission } from "@/components/mail/composeValidation";
 import { RightPanel, type ContextAction } from "@/components/mail/RightPanel";
 import { SettingsModal } from "@/components/mail/SettingsModal";
 import { AttachmentPreviewDrawer } from "@/components/mail/AttachmentPreviewDrawer";
+import {
+  buildBulkActionPatch,
+  getBulkActionConfirmation,
+  getBulkActionProgressLabel,
+  type BulkActionConfirmation,
+  type BulkActionRequest,
+  type BulkFailure,
+  type BulkProgressState,
+} from "@/components/mail/bulk-actions";
 import {
   defaultMailFilters,
   deriveProof,
@@ -86,10 +96,21 @@ function IndexPage() {
   return <MailApp isDemoMode={authMode === "demo"} onSignOut={() => setAuthMode("logged-out")} />;
 }
 
+function delay(ms: number) {
+  return new Promise((resolve) => globalThis.setTimeout(resolve, ms));
+}
+
 function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: () => void }) {
   const [folder, setFolder] = useState<MailFolder>("inbox");
   const [emails, setEmails] = useState<Email[]>(initialEmails);
   const [selectedId, setSelectedId] = useState<string | null>(initialEmails[0].id);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkProgress, setBulkProgress] = useState<BulkProgressState | null>(null);
+  const [bulkFailures, setBulkFailures] = useState<BulkFailure[]>([]);
+  const [bulkConfirmation, setBulkConfirmation] = useState<{
+    request: BulkActionRequest;
+    confirmation: BulkActionConfirmation;
+  } | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
   const [composeInitial, setComposeInitial] = useState<{
@@ -170,6 +191,13 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
   );
   const visibleEmails = useMemo(() => getEmailsForFolder(emails, folder), [emails, folder]);
   const selected = emails.find((e) => e.id === selectedId) ?? null;
+  const selectedEmails = useMemo(
+    () =>
+      selectedIds
+        .map((id) => emails.find((email) => email.id === id))
+        .filter((email): email is Email => Boolean(email)),
+    [emails, selectedIds],
+  );
 
   const updateEmail = (id: string, patch: Partial<Email>) => {
     setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch } : e)));
@@ -292,6 +320,82 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
     onCalendarReminderChange: calendar.updateReminder,
     onPreviewAttachment: (attachment: { name: string; size: string; type: string }) =>
       setPreviewAttachment(attachment),
+  };
+
+  const runBulkAction = async (request: BulkActionRequest) => {
+    if (!selectedEmails.length) return;
+
+    const targets = selectedEmails;
+    let failures: BulkFailure[] = [];
+    setBulkFailures([]);
+    setBulkProgress({
+      action: request.action,
+      label: getBulkActionProgressLabel(request, targets.length),
+      total: targets.length,
+      completed: 0,
+      failures: [],
+    });
+
+    for (const email of targets) {
+      const result = buildBulkActionPatch(request, email);
+      if (!result.ok) {
+        failures = [...failures, { id: email.id, subject: email.subject, reason: result.reason }];
+        setBulkProgress((current) =>
+          current
+            ? {
+                ...current,
+                completed: current.completed + 1,
+                failures,
+              }
+            : current,
+        );
+        continue;
+      }
+
+      updateEmail(email.id, result.patch);
+      await delay(90);
+      setBulkProgress((current) =>
+        current
+          ? {
+              ...current,
+              completed: current.completed + 1,
+              failures,
+            }
+          : current,
+      );
+    }
+
+    const successCount = targets.length - failures.length;
+    setBulkFailures(failures);
+    setBulkProgress((current) =>
+      current
+        ? {
+            ...current,
+            completed: current.total,
+            failures,
+          }
+        : current,
+    );
+    setSelectedIds([]);
+
+    if (failures.length > 0) {
+      showToast(
+        `${failures.length} selected message${failures.length === 1 ? "" : "s"} could not be updated`,
+        { tone: "danger" },
+      );
+    } else if (successCount > 0) {
+      showToast(`${getBulkActionProgressLabel(request, successCount)} complete`);
+    }
+  };
+
+  const handleBulkActionRequest = (request: BulkActionRequest) => {
+    if (!selectedEmails.length) return;
+    const confirmation = getBulkActionConfirmation(request, selectedEmails);
+    if (confirmation) {
+      setBulkConfirmation({ request, confirmation });
+      return;
+    }
+    void runBulkAction(request);
   };
 
   const handleContextAction = (action: ContextAction, email: Email) => {
@@ -432,7 +536,12 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
             <EmailList
               emails={emails}
               selectedId={selectedId}
+              selectedIds={selectedIds}
               onSelect={setSelectedId}
+              onSelectionChange={setSelectedIds}
+              onBulkAction={handleBulkActionRequest}
+              bulkProgress={bulkProgress}
+              bulkFailures={bulkFailures}
               onConvertSender={openSenderConversion}
               folder={folder}
               filters={filters}
@@ -476,6 +585,16 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
           </div>
         </div>
       </div>
+
+      <BulkConfirmDialog
+        confirmation={bulkConfirmation?.confirmation ?? null}
+        onCancel={() => setBulkConfirmation(null)}
+        onConfirm={() => {
+          const request = bulkConfirmation?.request;
+          setBulkConfirmation(null);
+          if (request) void runBulkAction(request);
+        }}
+      />
 
       <Compose
         open={composeOpen}
@@ -521,6 +640,7 @@ function MailApp({ isDemoMode, onSignOut }: { isDemoMode?: boolean; onSignOut?: 
           setFilters(defaultMailFilters);
           setFolder(email.folder);
           setSelectedId(email.id);
+          setSelectedIds([]);
         }}
         onOpenSettings={() => {
           setSettingsSnapshot(preferences);
