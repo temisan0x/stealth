@@ -178,3 +178,13 @@ export interface DemoItem {
   title: string;
   description: string;
 }
+
+export type AdminRecordStatus = "active" | "invited" | "suspended";
+
+export interface AdminDemoRecord {
+  id: string;
+  name: string;
+  address: string;
+  role: string;
+  status: AdminRecordStatus;
+}
