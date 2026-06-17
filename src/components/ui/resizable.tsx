@@ -11,24 +11,35 @@ const ResizablePanelGroup = ({
   className,
   direction,
   onLayout,
+  onLayoutChanged,
   ...props
-}: Omit<React.ComponentProps<typeof Group>, "orientation" | "onLayoutChange"> & {
+}: Omit<
+  React.ComponentProps<typeof Group>,
+  "orientation" | "onLayoutChange" | "onLayoutChanged"
+> & {
   direction?: "horizontal" | "vertical";
   onLayout?: (sizes: number[]) => void;
+  onLayoutChanged?: (sizes: number[]) => void;
 }) => {
   const handleLayoutChange = (layout: Layout) => {
     onLayout?.(Object.values(layout));
+  };
+
+  const handleLayoutChanged = (layout: Layout) => {
+    onLayoutChanged?.(Object.values(layout));
   };
 
   return (
     <Group
       orientation={direction}
       onLayoutChange={onLayout ? handleLayoutChange : undefined}
+      onLayoutChanged={onLayoutChanged ? handleLayoutChanged : undefined}
       className={cn("flex h-full w-full data-[panel-group-direction=vertical]:flex-col", className)}
       {...props}
     />
   );
 };
+
 
 const ResizablePanel = ({
   onCollapse,

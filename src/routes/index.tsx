@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { MotionConfig } from "framer-motion";
 import { AmbientBackground } from "@/components/mail/AmbientBackground";
 import { cn } from "@/lib/utils";
 import { BulkConfirmDialog } from "@/components/mail/BulkConfirmDialog";
@@ -100,7 +101,8 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
     request: BulkActionRequest;
     confirmation: BulkActionConfirmation;
   } | null>(null);
-  const { layout, setLayout, resetLayout } = useLayoutPreferences();
+  const { layout, setLayout, resetLayout, hydrated: layoutHydrated } = useLayoutPreferences();
+  const { preferences, setPreferences, hydrated: prefHydrated } = usePreferences();
   const [composeOpen, setComposeOpen] = useState(false);
   const [composeInitial, setComposeInitial] = useState<{
     to?: string;
@@ -115,7 +117,6 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [calendarEventId, setCalendarEventId] = useState<string | null>(null);
   const [calendarCreateRequest, setCalendarCreateRequest] = useState(0);
-  const { preferences, setPreferences } = usePreferences();
   const [settingsSnapshot, setSettingsSnapshot] = useState<typeof preferences | null>(null);
   const senderConversion = useSenderConversion();
   const snooze = useSnooze();
@@ -603,8 +604,14 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
     setSelectedId(firstMatch?.id ?? null);
   }, [customFolder, emails]);
 
+  const isTest = typeof window !== "undefined" && !!window.navigator.webdriver;
+
   return (
-    <div className="relative min-h-screen text-foreground">
+    <MotionConfig transition={isTest ? { duration: 0 } : undefined}>
+      <div
+        data-hydrated={layoutHydrated && prefHydrated}
+        className="relative h-screen overflow-hidden text-foreground"
+      >
       <AmbientBackground />
       {isDemoMode && (
         <div className="absolute top-0 inset-x-0 z-50 bg-primary/20 backdrop-blur-md border-b border-primary/30 py-1 text-center text-xs font-medium text-primary shadow-sm pointer-events-none">
@@ -612,15 +619,15 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
         </div>
       )}
 
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="flex min-h-screen"
-        onLayout={(sizes: number[]) => {
-          if (isMobile) return;
-          setLayout({
-            sidebarWidth: sizes[0],
-            listWidth: sizes[1], // This might be wrong if nested, but I'll nest them for better control
-          });
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="flex h-full w-full"
+        onLayoutChanged={(sizes) => {
+          if (isMobile || !sizes.length) return;
+          const sidebarWidth = sizes[0];
+          if (sidebarWidth > 4) {
+            setLayout({ sidebarWidth });
+          }
         }}
       >
         {!isMobile && (
@@ -695,7 +702,7 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
                 setFilters({ ...defaultMailFilters, unreadOnly: true });
               }}
             />
-            <div className="flex min-w-0 flex-1">
+            <div className="flex min-h-0 min-w-0 flex-1">
               {folder === "requests" ? (
                 <RequestsTriageBoard
                   emails={emails}
@@ -705,15 +712,23 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
               ) : (
                 <ResizablePanelGroup
                   direction="horizontal"
-                  onLayout={(sizes: number[]) => {
-                    if (isMobile) return;
-                    setLayout({
-                      listWidth: sizes[0],
-                      readerWidth: sizes[1],
-                    });
+                  className="h-full w-full"
+                  onLayoutChanged={(sizes) => {
+                    if (isMobile || sizes.length < 2) return;
+                    const listWidth = sizes[0];
+                    const readerWidth = sizes[1];
+                    if (listWidth >= 20 && readerWidth >= 30) {
+                      setLayout({
+                        listWidth,
+                        readerWidth,
+                      });
+                    }
                   }}
                 >
-                  <ResizablePanel defaultSize={isMobile ? 100 : layout.listWidth} minSize={20}>
+                  <ResizablePanel
+                    defaultSize={isMobile ? 100 : layout.listWidth}
+                    minSize={20}
+                  >
                     <EmailList
                       emails={emails}
                       selectedId={selectedId}
@@ -738,7 +753,10 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
                   {!isMobile && (
                     <>
                       <ResizableHandle withHandle />
-                      <ResizablePanel defaultSize={layout.readerWidth} minSize={30}>
+                      <ResizablePanel
+                        defaultSize={layout.readerWidth}
+                        minSize={30}
+                      >
                         <EmailView email={selected} actions={emailActions} />
                       </ResizablePanel>
                       <ResizableHandle withHandle />
@@ -900,6 +918,7 @@ function MailApp({ isDemoMode }: { isDemoMode?: boolean }) {
         attachment={previewAttachment}
         senderAddress={selected?.email}
       />
-    </div>
+      </div>
+    </MotionConfig>
   );
 }
