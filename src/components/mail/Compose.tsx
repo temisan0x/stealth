@@ -119,14 +119,16 @@ export function Compose({
     if (!open) return;
     let cancelled = false;
     fetch("/relays/default/diagnostics")
-      .then((r) => r.ok ? r.json() : Promise.reject())
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((data: { status: RelayStatus }) => {
         if (!cancelled) setRelayStatus(data.status ?? "unknown");
       })
       .catch(() => {
         if (!cancelled) setRelayStatus("unknown");
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [open]);
 
   // Resolve recipients when `to` field changes
@@ -298,7 +300,9 @@ export function Compose({
                 postage={postage}
                 relayStatus={relayStatus}
                 onAddPostage={() => {
-                  const el = document.querySelector<HTMLInputElement>('[aria-label="Postage amount"]');
+                  const el = document.querySelector<HTMLInputElement>(
+                    '[aria-label="Postage amount"]',
+                  );
                   el?.focus();
                 }}
               />

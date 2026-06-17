@@ -22,12 +22,9 @@ interface CheckItem {
 }
 
 function StatusIcon({ status }: { status: CheckItem["status"] }) {
-  if (status === "ok")
-    return <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />;
-  if (status === "error")
-    return <AlertCircle className="h-3.5 w-3.5 shrink-0 text-red-400" />;
-  if (status === "warn")
-    return <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-400" />;
+  if (status === "ok") return <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />;
+  if (status === "error") return <AlertCircle className="h-3.5 w-3.5 shrink-0 text-red-400" />;
+  if (status === "warn") return <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-400" />;
   return <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-blue-400" />;
 }
 
@@ -52,20 +49,16 @@ export function DeliveryEstimator({
   const hasUnresolved = recipients.some((r) => r.state === "resolving");
   const hasUnknown = recipients.some((r) => r.state === "unknown");
   const postageNeeded = recipients.some((r) => r.postage === "required");
-  const missingKey = recipients.some((r) => encrypted && !r.encryptionKey && r.state === "verified");
+  const missingKey = recipients.some(
+    (r) => encrypted && !r.encryptionKey && r.state === "verified",
+  );
 
   const checks: CheckItem[] = [
     // Identity check
     {
       id: "identity",
       label: "Recipient identity",
-      status: hasBlocked
-        ? "error"
-        : hasUnresolved
-          ? "pending"
-          : hasUnknown
-            ? "warn"
-            : "ok",
+      status: hasBlocked ? "error" : hasUnresolved ? "pending" : hasUnknown ? "warn" : "ok",
       detail: hasBlocked
         ? "One or more recipients are blocked"
         : hasUnresolved
@@ -100,9 +93,7 @@ export function DeliveryEstimator({
           ? `${postage} XLM attached`
           : "No postage (allowed)",
       cta:
-        postageNeeded && onAddPostage
-          ? { label: "Set postage", action: onAddPostage }
-          : undefined,
+        postageNeeded && onAddPostage ? { label: "Set postage", action: onAddPostage } : undefined,
     },
     // Relay check
     {
@@ -152,10 +143,7 @@ export function DeliveryEstimator({
 
   return (
     <div
-      className={cn(
-        "mx-0 mt-2 rounded-lg border px-3 py-2.5 text-[11px]",
-        bannerClass,
-      )}
+      className={cn("mx-0 mt-2 rounded-lg border px-3 py-2.5 text-[11px]", bannerClass)}
       aria-label="Delivery readiness"
     >
       {/* Header row */}
