@@ -1,68 +1,71 @@
-import * as React from "react";
+import { useRef } from "react";
 import { GripVertical } from "lucide-react";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import type { PanelSize } from "react-resizable-panels";
 
 import { cn } from "@/lib/utils";
 
-import type { Layout } from "react-resizable-panels";
+type ResizablePanelGroupProps = Omit<
+  React.ComponentProps<typeof Group>,
+  "orientation" | "onLayoutChange"
+> & {
+  direction?: "horizontal" | "vertical";
+  onLayout?: (sizes: number[]) => void;
+};
 
 const ResizablePanelGroup = ({
   className,
   direction,
   onLayout,
   ...props
-}: Omit<React.ComponentProps<typeof Group>, "orientation" | "onLayoutChange"> & {
-  direction?: "horizontal" | "vertical";
-  onLayout?: (sizes: number[]) => void;
-}) => {
-  const handleLayoutChange = (layout: Layout) => {
-    onLayout?.(Object.values(layout));
-  };
+}: ResizablePanelGroupProps) => (
+  <Group
+    className={cn("flex h-full w-full data-[panel-group-direction=vertical]:flex-col", className)}
+    orientation={direction}
+    onLayoutChange={(layout) => onLayout?.(Object.values(layout))}
+    {...props}
+  />
+);
 
-  return (
-    <Group
-      orientation={direction}
-      onLayoutChange={onLayout ? handleLayoutChange : undefined}
-      className={cn("flex h-full w-full data-[panel-group-direction=vertical]:flex-col", className)}
-      {...props}
-    />
-  );
+type ResizablePanelProps = React.ComponentProps<typeof Panel> & {
+  onCollapse?: () => void;
+  onExpand?: () => void;
 };
 
 const ResizablePanel = ({
+  collapsible,
+  collapsedSize = 0,
   onCollapse,
   onExpand,
   onResize,
   ...props
-}: Omit<React.ComponentProps<typeof Panel>, "onResize"> & {
-  onCollapse?: () => void;
-  onExpand?: () => void;
-  onResize?: (
-    size: PanelSize,
-    id: string | number | undefined,
-    prevSize: PanelSize | undefined,
-  ) => void;
-}) => {
-  const wasCollapsedRef = React.useRef(false);
+}: ResizablePanelProps) => {
+  const collapsedRef = useRef(false);
 
-  const handleResize = (
-    size: PanelSize,
-    id: string | number | undefined,
-    prevSize: PanelSize | undefined,
-  ) => {
-    onResize?.(size, id, prevSize);
-    const isCollapsed = size.asPercentage === 0;
-    if (isCollapsed && !wasCollapsedRef.current) {
-      wasCollapsedRef.current = true;
-      onCollapse?.();
-    } else if (!isCollapsed && wasCollapsedRef.current) {
-      wasCollapsedRef.current = false;
-      onExpand?.();
-    }
-  };
+  return (
+    <Panel
+      collapsible={collapsible}
+      collapsedSize={collapsedSize}
+      onResize={(size, id, previousSize) => {
+        const collapsedThreshold =
+          typeof collapsedSize === "number" ? collapsedSize : Number.parseFloat(collapsedSize);
+        const isCollapsed = !!collapsible && size.asPercentage <= collapsedThreshold + 0.5;
 
-  return <Panel onResize={handleResize} {...props} />;
+        if (isCollapsed && !collapsedRef.current) {
+          collapsedRef.current = true;
+          onCollapse?.();
+        }
+
+        if (!isCollapsed && collapsedRef.current) {
+          collapsedRef.current = false;
+          onExpand?.();
+        }
+
+        onResize?.(size, id, previousSize);
+      }}
+      {...props}
+    />
+  );
 };
 
 const ResizableHandle = ({

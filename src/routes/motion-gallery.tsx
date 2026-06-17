@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
+  type AnimationPreset,
   motionPresets,
   entrance,
   exit,
@@ -187,6 +188,12 @@ const presetCategories = [
   },
 ];
 
+type PresetCategory = (typeof presetCategories)[number];
+type PresetItem = PresetCategory["presets"][number] & {
+  variant: AnimationPreset;
+  isInteractive?: boolean;
+};
+
 interface AnimationDemo {
   categoryIndex: number;
   presetIndex: number;
@@ -197,7 +204,7 @@ function AnimationPreview({
   isInteractive,
   onReset,
 }: {
-  variant: any;
+  variant: AnimationPreset;
   isInteractive?: boolean;
   onReset: () => void;
 }) {
@@ -212,7 +219,6 @@ function AnimationPreview({
   if (isInteractive) {
     return (
       <motion.div
-        initial={{ y: 0 }}
         className="w-full h-32 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center cursor-pointer"
         {...variant}
         key={showDemo ? "shown" : "hidden"}
@@ -398,7 +404,7 @@ const preference = motionPresets.getMotionPreference();`}
                   >
                     <div className="border-t border-border bg-background/50 px-6 py-6">
                       <div className="space-y-6">
-                        {category.presets.map((preset, presetIndex) => (
+                        {category.presets.map((preset: PresetItem, presetIndex) => (
                           <div key={preset.key} className="space-y-3">
                             {/* Preset Header */}
                             <button

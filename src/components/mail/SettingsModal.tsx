@@ -470,19 +470,24 @@ function InboxSettings({
 
   const liveTemplate = findMailboxPolicyTemplate(currentDraft);
 
+  const selectedTemplate =
+    previewTemplateId === "custom"
+      ? null
+      : (MAILBOX_POLICY_TEMPLATES.find((template) => template.id === previewTemplateId) ?? null);
+
   const selectedPreview =
     previewTemplateId === "custom"
       ? (savedCustomTemplate ??
         buildCustomMailboxPolicyTemplate(currentDraft, liveTemplate?.id ?? null))
-      : (MAILBOX_POLICY_TEMPLATES.find((template) => template.id === previewTemplateId) ?? null);
+      : selectedTemplate;
 
   const selectedPreferences =
     previewTemplateId === "custom"
       ? savedCustomTemplate
         ? savedCustomTemplateToPreferences(savedCustomTemplate)
         : currentDraft
-      : selectedPreview
-        ? templateToPreferences(selectedPreview as MailboxPolicyTemplate)
+      : selectedTemplate
+        ? templateToPreferences(selectedTemplate)
         : currentDraft;
 
   const previewMatchesCurrent =
@@ -491,11 +496,8 @@ function InboxSettings({
         ? savedCustomTemplate.policy.unknownSenders === preferences.unknownSenders &&
           savedCustomTemplate.policy.minimumPostage === preferences.minimumPostage
         : true
-      : selectedPreview
-        ? mailboxPolicyTemplateMatchesPreferences(
-            selectedPreview as MailboxPolicyTemplate,
-            currentDraft,
-          )
+      : selectedTemplate
+        ? mailboxPolicyTemplateMatchesPreferences(selectedTemplate, currentDraft)
         : false;
 
   const applyingWillReplaceCurrent =
@@ -508,8 +510,6 @@ function InboxSettings({
   };
 
   const handleApply = () => {
-    if (!selectedPreview) return;
-
     if (previewTemplateId === "custom") {
       if (!savedCustomTemplate) {
         setSavedCustomTemplate(
@@ -525,9 +525,11 @@ function InboxSettings({
       return;
     }
 
+    if (!selectedTemplate) return;
+
     onChange({
       ...preferences,
-      ...templateToPreferences(selectedPreview as MailboxPolicyTemplate),
+      ...templateToPreferences(selectedTemplate),
     });
   };
 
