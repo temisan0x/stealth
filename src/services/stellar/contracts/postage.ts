@@ -62,7 +62,7 @@ const SPEC_ENTRIES: string[] = [
   "AAAAAAAAAAAAAAAHZGlzcHV0ZQAAAAABAAAAAAAAAAptZXNzYWdlX2lkAAAAAAPuAAAAIAAAAAEAAAPpAAAH0AAAAAdQb3N0YWdlAAAAB9AAAAAFRXJyb3IAAAA=",
   "AAAAAAAAAAAAAAAGZXhwaXJlAAAAAAABAAAAAAAAAAptZXNzYWdlX2lkAAAAAAPuAAAAIAAAAAEAAAPpAAAH0AAAAAdQb3N0YWdlAAAAB9AAAAAFRXJyb3IAAAA=",
   "AAAAAAAAAAAAAAAHcmVjbGFpbQAAAAABAAAAAAAAAAptZXNzYWdlX2lkAAAAAAPuAAAAIAAAAAEAAAPpAAAH0AAAAAdQb3N0YWdlAAAAB9AAAAAFRXJyb3IAAAA=",
-  "AAAAAAAAAAAAAAADZ2V0AAAAAAEAAAAAAAAACm1lc3NhZ2VfaWQAAAAAA+4AAAAgAAAAAQAAA+kAAAfQAAAAB1Bvc3RhZ2UAAAAH0AAAAAVFcnJvcgAAAA==",
+  "AAAAAAAAAAAAAAADZ2V0AAAAAAEAAAAAAAAACm1lc3NhZ2VfaWQAAAAAA+4AAAAgAAAAAQAAA+kAAAfQAAAAB1Bvc3RhZ2UAAAAH0AAAAAVFcnJvcgAAAA=="
 ];
 
 export interface PostageClientOptions {
@@ -74,20 +74,27 @@ export interface PostageClientOptions {
 }
 
 /** Map a contract error code to an actionable PostageError variant. */
-export function parsePostageError(code: number): PostageError | undefined {
+export function parsePostageError(
+  code: number
+): PostageError | undefined {
   return Object.values(PostageError).includes(code as PostageError)
     ? (code as PostageError)
     : undefined;
 }
 
 /** Typed Soroban contract client for the Postage contract. */
-export function createPostageClient(opts: PostageClientOptions): contract.Client {
-  return new contract.Client(new contract.Spec(SPEC_ENTRIES), {
-    contractId: opts.contractId,
-    networkPassphrase: opts.networkPassphrase,
-    rpcUrl: opts.rpcUrl,
-    ...(opts.publicKey ? { publicKey: opts.publicKey } : {}),
-  });
+export function createPostageClient(
+  opts: PostageClientOptions
+): contract.Client {
+  return new contract.Client(
+    new contract.Spec(SPEC_ENTRIES),
+    {
+      contractId: opts.contractId,
+      networkPassphrase: opts.networkPassphrase,
+      rpcUrl: opts.rpcUrl,
+      ...(opts.publicKey ? { publicKey: opts.publicKey } : {}),
+    }
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -98,101 +105,77 @@ export function createPostageClient(opts: PostageClientOptions): contract.Client
 // ---------------------------------------------------------------------------
 
 export async function initialize(
-  client: contract.Client,
-  asset: string,
-  treasury: string,
-  minimum: bigint,
-  fee_bps: number,
-  expiry_seconds: bigint,
-  dispute_seconds: bigint,
+  client: contract.Client, asset: string, treasury: string, minimum: bigint, fee_bps: number, expiry_seconds: bigint, dispute_seconds: bigint
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
-  const tx = await (client as any).initialize({
-    asset,
-    treasury,
-    minimum,
-    fee_bps,
-    expiry_seconds,
-    dispute_seconds,
-  });
+  const tx = await (client as any).initialize({ asset, treasury, minimum, fee_bps, expiry_seconds, dispute_seconds });
   return tx.result;
 }
 
 export async function config(
-  client: contract.Client,
+  client: contract.Client
 ): Promise<contract.Ok<EscrowConfig> | contract.Err<{ message: string }>> {
   const tx = await (client as any).config({});
   return tx.result;
 }
 
 export async function minimum(
-  client: contract.Client,
+  client: contract.Client
 ): Promise<contract.Ok<bigint> | contract.Err<{ message: string }>> {
   const tx = await (client as any).minimum({});
   return tx.result;
 }
 
 export async function quote(
-  client: contract.Client,
-  sender_trusted: boolean,
+  client: contract.Client, sender_trusted: boolean
 ): Promise<contract.Ok<bigint> | contract.Err<{ message: string }>> {
   const tx = await (client as any).quote({ sender_trusted });
   return tx.result;
 }
 
 export async function submit(
-  client: contract.Client,
-  message_id: Buffer,
-  sender: string,
-  recipient: string,
-  amount: bigint,
+  client: contract.Client, message_id: Buffer, sender: string, recipient: string, amount: bigint
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).submit({ message_id, sender, recipient, amount });
   return tx.result;
 }
 
 export async function settle(
-  client: contract.Client,
-  message_id: Buffer,
+  client: contract.Client, message_id: Buffer
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).settle({ message_id });
   return tx.result;
 }
 
 export async function refund(
-  client: contract.Client,
-  message_id: Buffer,
+  client: contract.Client, message_id: Buffer
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).refund({ message_id });
   return tx.result;
 }
 
 export async function dispute(
-  client: contract.Client,
-  message_id: Buffer,
+  client: contract.Client, message_id: Buffer
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).dispute({ message_id });
   return tx.result;
 }
 
 export async function expire(
-  client: contract.Client,
-  message_id: Buffer,
+  client: contract.Client, message_id: Buffer
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).expire({ message_id });
   return tx.result;
 }
 
 export async function reclaim(
-  client: contract.Client,
-  message_id: Buffer,
+  client: contract.Client, message_id: Buffer
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).reclaim({ message_id });
   return tx.result;
 }
 
 export async function get(
-  client: contract.Client,
-  message_id: Buffer,
+  client: contract.Client, message_id: Buffer
 ): Promise<contract.Ok<Postage> | contract.Err<{ message: string }>> {
   const tx = await (client as any).get({ message_id });
   return tx.result;

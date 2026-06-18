@@ -74,7 +74,7 @@ const SPEC_ENTRIES: string[] = [
   "AAAAAAAAAAAAAAALc2VuZGVyX3J1bGUAAAAAAgAAAAAAAAAFb3duZXIAAAAAAAATAAAAAAAAAAZzZW5kZXIAAAAAABMAAAABAAAH0AAAAApTZW5kZXJSdWxlAAA=",
   "AAAAAAAAAAAAAAALc2VuZGVyX3RpZXIAAAAAAgAAAAAAAAAFb3duZXIAAAAAAAATAAAAAAAAAAZzZW5kZXIAAAAAABMAAAABAAAD6AAAAAs=",
   "AAAAAAAAAAAAAAAIY2FuX21haWwAAAAFAAAAAAAAAAVvd25lcgAAAAAAABMAAAAAAAAABnNlbmRlcgAAAAAAEwAAAAAAAAAIdmVyaWZpZWQAAAABAAAAAAAAAAdwb3N0YWdlAAAAAAsAAAAAAAAAB3JlY2VpcHQAAAAAAQAAAAEAAAAB",
-  "AAAAAAAAAAAAAAAIZXZhbHVhdGUAAAAFAAAAAAAAAAVvd25lcgAAAAAAABMAAAAAAAAABnNlbmRlcgAAAAAAEwAAAAAAAAAIdmVyaWZpZWQAAAABAAAAAAAAAAdwb3N0YWdlAAAAAAsAAAAAAAAAB3JlY2VpcHQAAAAAAQAAAAEAAAfQAAAADlBvbGljeURlY2lzaW9uAAA=",
+  "AAAAAAAAAAAAAAAIZXZhbHVhdGUAAAAFAAAAAAAAAAVvd25lcgAAAAAAABMAAAAAAAAABnNlbmRlcgAAAAAAEwAAAAAAAAAIdmVyaWZpZWQAAAABAAAAAAAAAAdwb3N0YWdlAAAAAAsAAAAAAAAAB3JlY2VpcHQAAAAAAQAAAAEAAAfQAAAADlBvbGljeURlY2lzaW9uAAA="
 ];
 
 export interface PoliciesClientOptions {
@@ -86,20 +86,27 @@ export interface PoliciesClientOptions {
 }
 
 /** Map a contract error code to an actionable PoliciesError variant. */
-export function parsePoliciesError(code: number): PoliciesError | undefined {
+export function parsePoliciesError(
+  code: number
+): PoliciesError | undefined {
   return Object.values(PoliciesError).includes(code as PoliciesError)
     ? (code as PoliciesError)
     : undefined;
 }
 
 /** Typed Soroban contract client for the Policies contract. */
-export function createPoliciesClient(opts: PoliciesClientOptions): contract.Client {
-  return new contract.Client(new contract.Spec(SPEC_ENTRIES), {
-    contractId: opts.contractId,
-    networkPassphrase: opts.networkPassphrase,
-    rpcUrl: opts.rpcUrl,
-    ...(opts.publicKey ? { publicKey: opts.publicKey } : {}),
-  });
+export function createPoliciesClient(
+  opts: PoliciesClientOptions
+): contract.Client {
+  return new contract.Client(
+    new contract.Spec(SPEC_ENTRIES),
+    {
+      contractId: opts.contractId,
+      networkPassphrase: opts.networkPassphrase,
+      rpcUrl: opts.rpcUrl,
+      ...(opts.publicKey ? { publicKey: opts.publicKey } : {}),
+    }
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -110,140 +117,105 @@ export function createPoliciesClient(opts: PoliciesClientOptions): contract.Clie
 // ---------------------------------------------------------------------------
 
 export async function setPolicy(
-  client: contract.Client,
-  owner: string,
-  policy: MailboxPolicy,
+  client: contract.Client, owner: string, policy: MailboxPolicy
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_policy({ owner, policy });
   return tx.result;
 }
 
 export async function setPolicyAs(
-  client: contract.Client,
-  owner: string,
-  actor: string,
-  policy: MailboxPolicy,
+  client: contract.Client, owner: string, actor: string, policy: MailboxPolicy
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_policy_as({ owner, actor, policy });
   return tx.result;
 }
 
-export async function getPolicy(client: contract.Client, owner: string): Promise<MailboxPolicy> {
+export async function getPolicy(
+  client: contract.Client, owner: string
+): Promise<MailboxPolicy> {
   const tx = await (client as any).get_policy({ owner });
   return tx.result;
 }
 
 export async function getVersionedPolicy(
-  client: contract.Client,
-  owner: string,
+  client: contract.Client, owner: string
 ): Promise<VersionedMailboxPolicy> {
   const tx = await (client as any).get_versioned_policy({ owner });
   return tx.result;
 }
 
-export async function policyVersion(client: contract.Client, owner: string): Promise<number> {
+export async function policyVersion(
+  client: contract.Client, owner: string
+): Promise<number> {
   const tx = await (client as any).policy_version({ owner });
   return tx.result;
 }
 
 export async function setDelegate(
-  client: contract.Client,
-  owner: string,
-  delegate: string,
-  scope: DelegateScope,
+  client: contract.Client, owner: string, delegate: string, scope: DelegateScope
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_delegate({ owner, delegate, scope });
   return tx.result;
 }
 
 export async function delegateScope(
-  client: contract.Client,
-  owner: string,
-  delegate: string,
+  client: contract.Client, owner: string, delegate: string
 ): Promise<DelegateScope> {
   const tx = await (client as any).delegate_scope({ owner, delegate });
   return tx.result;
 }
 
 export async function setSenderRule(
-  client: contract.Client,
-  owner: string,
-  sender: string,
-  rule: SenderRule,
+  client: contract.Client, owner: string, sender: string, rule: SenderRule
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_sender_rule({ owner, sender, rule });
   return tx.result;
 }
 
 export async function setSenderRuleAs(
-  client: contract.Client,
-  owner: string,
-  actor: string,
-  sender: string,
-  rule: SenderRule,
+  client: contract.Client, owner: string, actor: string, sender: string, rule: SenderRule
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_sender_rule_as({ owner, actor, sender, rule });
   return tx.result;
 }
 
 export async function setSenderTier(
-  client: contract.Client,
-  owner: string,
-  sender: string,
-  minimum_postage: bigint,
+  client: contract.Client, owner: string, sender: string, minimum_postage: bigint
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_sender_tier({ owner, sender, minimum_postage });
   return tx.result;
 }
 
 export async function setSenderTierAs(
-  client: contract.Client,
-  owner: string,
-  actor: string,
-  sender: string,
-  minimum_postage: bigint,
+  client: contract.Client, owner: string, actor: string, sender: string, minimum_postage: bigint
 ): Promise<contract.Ok<void> | contract.Err<{ message: string }>> {
   const tx = await (client as any).set_sender_tier_as({ owner, actor, sender, minimum_postage });
   return tx.result;
 }
 
 export async function senderRule(
-  client: contract.Client,
-  owner: string,
-  sender: string,
+  client: contract.Client, owner: string, sender: string
 ): Promise<SenderRule> {
   const tx = await (client as any).sender_rule({ owner, sender });
   return tx.result;
 }
 
 export async function senderTier(
-  client: contract.Client,
-  owner: string,
-  sender: string,
+  client: contract.Client, owner: string, sender: string
 ): Promise<bigint | null> {
   const tx = await (client as any).sender_tier({ owner, sender });
   return tx.result;
 }
 
 export async function canMail(
-  client: contract.Client,
-  owner: string,
-  sender: string,
-  verified: boolean,
-  postage: bigint,
-  receipt: boolean,
+  client: contract.Client, owner: string, sender: string, verified: boolean, postage: bigint, receipt: boolean
 ): Promise<boolean> {
   const tx = await (client as any).can_mail({ owner, sender, verified, postage, receipt });
   return tx.result;
 }
 
 export async function evaluate(
-  client: contract.Client,
-  owner: string,
-  sender: string,
-  verified: boolean,
-  postage: bigint,
-  receipt: boolean,
+  client: contract.Client, owner: string, sender: string, verified: boolean, postage: bigint, receipt: boolean
 ): Promise<PolicyDecision> {
   const tx = await (client as any).evaluate({ owner, sender, verified, postage, receipt });
   return tx.result;
