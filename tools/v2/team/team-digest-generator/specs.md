@@ -4,13 +4,16 @@
 
 Generate daily summaries of team emails for quick review and digest.
 
-## Scope
+Generate a daily team digest that summarizes email activity, pending items, completed work, and team member contributions — all within an isolated workspace, with no dependency on the main Stealth Mail application.
 
 - **Release tier:** V2 (later-release)
 - **Audience:** Team
 - **Folder ownership:** `tools/v2/team/team-digest-generator/`
 
-This is a self-contained tooling workspace. Do not wire this tool into the main app, routing, inbox architecture, wallet core, Stellar core, or design system unless a future integration issue explicitly allows it.
+- Release tier: V2 later-release tool
+- Audience: team
+- Folder ownership: `tools/v2/team/team-digest-generator/`
+- Integration status: isolated mini-product workspace
 
 ## Recommended Internal Structure
 
