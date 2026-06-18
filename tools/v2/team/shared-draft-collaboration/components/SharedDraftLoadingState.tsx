@@ -1,10 +1,10 @@
-import React from 'react';
-import { Skeleton } from '../../../src/components/ui/skeleton';
+import React from "react";
+import { Skeleton } from "../../../src/components/ui/skeleton";
 
 /**
  * SharedDraftLoadingState
  * Accessible loading state with skeleton placeholders
- * 
+ *
  * Accessibility considerations:
  * - aria-busy indicates loading state to screen readers
  * - Skeleton components announce as busy but not blocking
@@ -12,12 +12,7 @@ import { Skeleton } from '../../../src/components/ui/skeleton';
  */
 export const SharedDraftLoadingState: React.FC = () => {
   return (
-    <div
-      className="space-y-4"
-      role="status"
-      aria-busy="true"
-      aria-label="Loading shared drafts"
-    >
+    <div className="space-y-4" role="status" aria-busy="true" aria-label="Loading shared drafts">
       <div className="text-sm text-slate-600">Loading drafts...</div>
       {[...Array(3)].map((_, i) => (
         <div

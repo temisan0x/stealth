@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from '../../../src/components/ui/button';
-import { SharedDraftEntry } from './SharedDraftEntry';
+import React from "react";
+import { Button } from "../../../src/components/ui/button";
+import { SharedDraftEntry } from "./SharedDraftEntry";
 
 interface SharedDraftData {
   id: string;
@@ -20,7 +20,7 @@ interface SharedDraftListProps {
 /**
  * SharedDraftList
  * Main list component displaying shared drafts (success state)
- * 
+ *
  * Accessibility considerations:
  * - Semantic list structure
  * - aria-label for list context
@@ -39,33 +39,21 @@ export const SharedDraftList: React.FC<SharedDraftListProps> = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">
-            Shared Drafts
-          </h2>
+          <h2 className="text-lg font-semibold text-slate-900">Shared Drafts</h2>
           <p className="text-sm text-slate-600 mt-1">
-            {drafts.length} draft{drafts.length !== 1 ? 's' : ''}
+            {drafts.length} draft{drafts.length !== 1 ? "s" : ""}
             {activeDrafts > 0 && ` • ${activeDrafts} active`}
           </p>
         </div>
-        <Button
-          onClick={onCreateNew}
-          aria-label="Create a new shared draft"
-        >
+        <Button onClick={onCreateNew} aria-label="Create a new shared draft">
           New Draft
         </Button>
       </div>
 
-      <ul
-        className="space-y-3"
-        role="list"
-        aria-label="Shared email drafts"
-      >
+      <ul className="space-y-3" role="list" aria-label="Shared email drafts">
         {drafts.map((draft) => (
           <li key={draft.id} role="listitem">
-            <SharedDraftEntry
-              {...draft}
-              onEdit={onEdit}
-            />
+            <SharedDraftEntry {...draft} onEdit={onEdit} />
           </li>
         ))}
       </ul>

@@ -42,22 +42,26 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 ## Component-Specific Guidelines
 
 ### SharedDraftEmptyState
+
 - Uses semantic `<h2>` for hierarchy
 - `role="status"` announces this is informational
 - Clear CTA button with descriptive label
 - Encourages collaboration messaging
 
 ### SharedDraftLoadingState
+
 - `role="status"` with `aria-busy="true"`
 - Announces "Loading drafts..." for context
 - Skeleton components don't trap focus
 
 ### SharedDraftErrorState
-- Uses `<Alert>` component with `role="alert"` 
+
+- Uses `<Alert>` component with `role="alert"`
 - Error message is descriptive and actionable
 - Retry button clearly labeled
 
 ### SharedDraftEntry
+
 - Uses semantic `<article>` for draft items
 - Icons have `aria-hidden="true"` since text provides context
 - Edit button has descriptive aria-label
@@ -66,6 +70,7 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 - Active badge uses both visual and text indicator
 
 ### SharedDraftList
+
 - Uses semantic `<ul>` and `<li>` elements
 - List has descriptive aria-label
 - Count summary helps screen reader users understand size
@@ -75,6 +80,7 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 ## Testing Accessibility
 
 ### Manual Testing Checklist
+
 - [ ] Keyboard navigation works (Tab through all controls)
 - [ ] Focus indicators are visible
 - [ ] Screen reader announces all content meaningfully
@@ -84,6 +90,7 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 - [ ] Active state is clear to all users
 
 ### Tools to Test With
+
 - NVDA (Windows) - free screen reader
 - JAWS (Windows) - commercial screen reader
 - VoiceOver (macOS/iOS) - built-in
@@ -91,6 +98,7 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 - Lighthouse accessibility audit
 
 ### Screen Reader Testing Path
+
 1. Load component
 2. Review page structure announcement
 3. Navigate by heading (h) key in most readers
@@ -101,6 +109,7 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 8. Confirm active state is announced
 
 ### Collaboration-Specific Testing
+
 - [ ] Collaborator count is announced clearly
 - [ ] Active draft indicator is accessible
 - [ ] Timestamps are readable by screen readers
@@ -110,6 +119,7 @@ All components are designed to meet WCAG 2.1 Level AA standards.
 ## Real-Time Collaboration Considerations
 
 When integrated with real-time collaboration features:
+
 - Announce new comments/changes to screen readers
 - Maintain focus during updates
 - Provide alternative to highlighting for active sections

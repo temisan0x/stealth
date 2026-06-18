@@ -27,12 +27,14 @@ shared-draft-collaboration/
 ## Features
 
 ### States Implemented
+
 - ✅ **Empty State**: Guides user to create first draft
 - ✅ **Loading State**: Shows skeleton loaders while fetching
 - ✅ **Error State**: Displays error with retry action
 - ✅ **Success State**: Shows list of shared drafts
 
 ### Accessibility
+
 - ✅ WCAG 2.1 Level AA compliant
 - ✅ Keyboard navigation throughout
 - ✅ Screen reader optimized with semantic HTML and ARIA
@@ -42,6 +44,7 @@ shared-draft-collaboration/
 - ✅ See [ACCESSIBILITY.md](./docs/ACCESSIBILITY.md) for details
 
 ### Component Design
+
 - Each component is self-contained and focused
 - Uses shared UI component library from `src/components/ui/`
 - Isolated to tool folder, not mounted in main app
@@ -49,6 +52,7 @@ shared-draft-collaboration/
 - Light and dark mode ready (via Tailwind classes)
 
 ### Collaboration Features (UI Ready)
+
 - Shows collaborator count per draft
 - Displays active state with visual indicator
 - Shows last modified timestamp
@@ -60,7 +64,7 @@ shared-draft-collaboration/
 ### Import and Use
 
 ```tsx
-import { SharedDraftCollaboration } from './components';
+import { SharedDraftCollaboration } from "./components";
 
 export function MyPage() {
   return <SharedDraftCollaboration />;
@@ -70,6 +74,7 @@ export function MyPage() {
 ### Component Props
 
 #### SharedDraftCollaboration
+
 No props required. Manages its own state internally using local fixtures.
 
 ```tsx
@@ -77,11 +82,13 @@ No props required. Manages its own state internally using local fixtures.
 ```
 
 #### SharedDraftList
+
 - `drafts: SharedDraftData[]` - Array of drafts to display
 - `onEdit: (id: string) => void` - Callback when opening draft
 - `onCreateNew: () => void` - Callback when creating new draft
 
 #### SharedDraftEntry
+
 - `id: string` - Unique identifier
 - `title: string` - Draft title
 - `subject?: string` - Draft subject line
@@ -99,10 +106,10 @@ The main `SharedDraftCollaboration` component includes local test fixtures:
 ```tsx
 const fixtureDrafts: SharedDraftData[] = [
   {
-    id: '1',
-    title: 'Q1 Team Updates',
-    subject: 'Monthly updates for leadership',
-    lastModified: '2025-01-15T14:30:00Z',
+    id: "1",
+    title: "Q1 Team Updates",
+    subject: "Monthly updates for leadership",
+    lastModified: "2025-01-15T14:30:00Z",
     collaborators: 3,
     isActive: true,
   },
@@ -119,7 +126,7 @@ useEffect(() => {
   // Replace fixture loading with API call
   fetchSharedDrafts().then((data) => {
     setDrafts(data);
-    setState(data.length === 0 ? 'empty' : 'success');
+    setState(data.length === 0 ? "empty" : "success");
   });
 }, []);
 ```
@@ -145,6 +152,7 @@ useEffect(() => {
 For detailed accessibility testing instructions, see [ACCESSIBILITY.md](./docs/ACCESSIBILITY.md).
 
 **Quick test:**
+
 1. Navigate using only Tab key
 2. Test with screen reader (NVDA, JAWS, VoiceOver)
 3. Check focus indicators are visible
@@ -156,6 +164,7 @@ For detailed accessibility testing instructions, see [ACCESSIBILITY.md](./docs/A
 ⚠️ **Not currently mounted in main app** - This is intentional per V2 design.
 
 When integration is needed in the future:
+
 - Create a separate issue for app-level integration
 - Do not modify main app shell, routing, or design system in this issue
 - Import components from this folder as-is
@@ -164,6 +173,7 @@ When integration is needed in the future:
 ## Collaboration Features (Ready for Integration)
 
 The UI is designed to support:
+
 - **Real-time editing**: Multiple users editing simultaneously
 - **Collaborator presence**: Show who's editing
 - **Live cursors**: Indicate where others are editing (accessibility-aware)

@@ -1,11 +1,11 @@
-import React from 'react';
-import { FileText } from 'lucide-react';
-import { Button } from '../../../src/components/ui/button';
+import React from "react";
+import { FileText } from "lucide-react";
+import { Button } from "../../../src/components/ui/button";
 
 /**
  * SharedDraftEmptyState
  * Accessible empty state for when no drafts exist
- * 
+ *
  * Accessibility considerations:
  * - Semantic heading for screen readers
  * - Descriptive aria-label on icon
@@ -20,22 +20,13 @@ export const SharedDraftEmptyState: React.FC = () => {
       aria-live="polite"
       aria-label="No shared drafts"
     >
-      <FileText
-        className="w-12 h-12 text-slate-400 mb-4"
-        aria-hidden="true"
-      />
-      <h2 className="text-lg font-semibold text-slate-900 mb-2">
-        No shared drafts
-      </h2>
+      <FileText className="w-12 h-12 text-slate-400 mb-4" aria-hidden="true" />
+      <h2 className="text-lg font-semibold text-slate-900 mb-2">No shared drafts</h2>
       <p className="text-slate-600 text-center max-w-sm mb-6">
-        Collaborate with your team by creating a new shared draft. 
-        Invite team members to edit together in real-time.
+        Collaborate with your team by creating a new shared draft. Invite team members to edit
+        together in real-time.
       </p>
-      <Button
-        aria-label="Create a new shared draft"
-      >
-        New Draft
-      </Button>
+      <Button aria-label="Create a new shared draft">New Draft</Button>
     </div>
   );
 };
