@@ -117,7 +117,10 @@ export function getPayloadDescriptorCatalog(): PayloadDescriptor[] {
   return [...PAYLOAD_DESCRIPTOR_CATALOG];
 }
 
-export function getPayloadDescriptorsByKind(): Record<PayloadDescriptor["kind"], PayloadDescriptor[]> {
+export function getPayloadDescriptorsByKind(): Record<
+  PayloadDescriptor["kind"],
+  PayloadDescriptor[]
+> {
   return {
     pdf: PAYLOAD_DESCRIPTOR_CATALOG.filter((entry) => entry.kind === "pdf"),
     image: PAYLOAD_DESCRIPTOR_CATALOG.filter((entry) => entry.kind === "image"),

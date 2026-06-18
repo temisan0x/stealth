@@ -9,9 +9,7 @@ describe("payload descriptor catalog", () => {
   it("provides all required descriptor kinds", () => {
     const kinds = new Set(PAYLOAD_DESCRIPTOR_CATALOG.map((entry) => entry.kind));
 
-    expect(kinds).toEqual(
-      new Set(["pdf", "image", "text", "key", "encrypted"]),
-    );
+    expect(kinds).toEqual(new Set(["pdf", "image", "text", "key", "encrypted"]));
   });
 
   it("keeps descriptors deterministic and safe for public review", () => {
@@ -20,13 +18,7 @@ describe("payload descriptor catalog", () => {
 
     expect(catalog).toHaveLength(PAYLOAD_DESCRIPTOR_CATALOG.length);
     expect(catalog).toEqual(PAYLOAD_DESCRIPTOR_CATALOG);
-    expect(Object.keys(byKind)).toEqual([
-      "pdf",
-      "image",
-      "text",
-      "key",
-      "encrypted",
-    ]);
+    expect(Object.keys(byKind)).toEqual(["pdf", "image", "text", "key", "encrypted"]);
 
     for (const descriptor of catalog) {
       expect(descriptor.id.trim()).not.toBe("");
