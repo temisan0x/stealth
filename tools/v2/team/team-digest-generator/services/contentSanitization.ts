@@ -1,3 +1,4 @@
+﻿/* eslint-disable no-control-regex, no-useless-escape */
 /**
  * Content sanitization service for Team Digest Generator
  * Handles sanitization of email content to prevent XSS and injection attacks

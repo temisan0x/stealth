@@ -1,3 +1,4 @@
+﻿/* eslint-disable no-control-regex, no-useless-escape */
 /**
  * Input validation service for Team Digest Generator
  * Handles validation of user input and configuration
