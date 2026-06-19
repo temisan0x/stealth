@@ -2,7 +2,13 @@
 // Manages communication tracking and history
 
 import { useState, useCallback, useMemo } from "react";
-import type { CommunicationRecord, TrackingFilter, VendorTrackingStats } from "../types";
+import type {
+  CommunicationRecord,
+  TrackingFilter,
+  VendorTrackingStats,
+  CommunicationType,
+  CommunicationStatus,
+} from "../types";
 import { getTrackingService } from "../services";
 
 export interface UseTrackingOptions {
@@ -70,7 +76,12 @@ export function useTracking(options: UseTrackingOptions = {}): UseTrackingState 
       try {
         setIsLoading(true);
         setError(null);
-        const record = await service.recordCommunication(vendorId, type as any, subject, preview);
+        const record = await service.recordCommunication(
+          vendorId,
+          type as CommunicationType,
+          subject,
+          preview,
+        );
         setRecords((prev) => [...prev, record]);
       } catch (err) {
         setError(err instanceof Error ? err : new Error("Unknown error"));
@@ -86,9 +97,11 @@ export function useTracking(options: UseTrackingOptions = {}): UseTrackingState 
       try {
         setIsLoading(true);
         setError(null);
-        await service.updateRecordStatus(recordId, status as any);
+        await service.updateRecordStatus(recordId, status as CommunicationStatus);
         setRecords((prev) =>
-          prev.map((r) => (r.id === recordId ? { ...r, status: status as any } : r)),
+          prev.map((r) =>
+            r.id === recordId ? { ...r, status: status as CommunicationStatus } : r,
+          ),
         );
       } catch (err) {
         setError(err instanceof Error ? err : new Error("Unknown error"));

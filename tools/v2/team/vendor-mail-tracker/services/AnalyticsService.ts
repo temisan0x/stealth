@@ -3,13 +3,8 @@
 
 import type { VendorMetrics, AnalyticsFilter, AnalyticsSummary } from "../types";
 
-export interface AnalyticsServiceDependencies {
-  // Define any external dependencies here (for future DI)
-  trackingService?: any; // TrackingService instance (optional DI)
-}
-
 export class AnalyticsService {
-  constructor(private deps: AnalyticsServiceDependencies = {}) {}
+  constructor(private deps: object = {}) {}
 
   /**
    * Get metrics for a specific vendor
@@ -75,7 +70,7 @@ export class AnalyticsService {
 // Singleton instance for use in hooks
 let analyticsService: AnalyticsService | null = null;
 
-export function getAnalyticsService(deps?: AnalyticsServiceDependencies): AnalyticsService {
+export function getAnalyticsService(deps?: object): AnalyticsService {
   if (!analyticsService) {
     analyticsService = new AnalyticsService(deps);
   }

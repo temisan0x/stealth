@@ -9,12 +9,8 @@ import type {
   VendorTrackingStats,
 } from "../types";
 
-export interface TrackingServiceDependencies {
-  // Define any external dependencies here (for future DI)
-}
-
 export class TrackingService {
-  constructor(private deps: TrackingServiceDependencies = {}) {}
+  constructor(private deps: object = {}) {}
 
   /**
    * Get all communication records with optional filtering
@@ -93,7 +89,7 @@ export class TrackingService {
 // Singleton instance for use in hooks
 let trackingService: TrackingService | null = null;
 
-export function getTrackingService(deps?: TrackingServiceDependencies): TrackingService {
+export function getTrackingService(deps?: object): TrackingService {
   if (!trackingService) {
     trackingService = new TrackingService(deps);
   }

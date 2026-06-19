@@ -10,13 +10,8 @@ import type {
   VendorFilter,
 } from "../types";
 
-export interface VendorServiceDependencies {
-  // Define any external dependencies here (for future DI)
-  // e.g., dataStore?, logger?, cache?
-}
-
 export class VendorService {
-  constructor(private deps: VendorServiceDependencies = {}) {}
+  constructor(private deps: object = {}) {}
 
   /**
    * Get all vendors with optional filtering
@@ -94,7 +89,7 @@ export class VendorService {
 // Singleton instance for use in hooks
 let vendorService: VendorService | null = null;
 
-export function getVendorService(deps?: VendorServiceDependencies): VendorService {
+export function getVendorService(deps?: object): VendorService {
   if (!vendorService) {
     vendorService = new VendorService(deps);
   }
