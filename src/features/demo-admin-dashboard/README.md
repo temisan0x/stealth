@@ -111,13 +111,13 @@ review.
 
 ### Quick reference
 
-| Export | Description |
-|---|---|
-| `inboxSeedDataset` | Aggregate `DemoDataset` with 21 messages and 19 senders |
-| `inboxSeedMessages` | `DemoMessage[]` — the 21 seed messages |
-| `inboxSeedSenders` | `DemoSender[]` — the 19 unique senders |
-| `inboxSeedMetadata` | Precomputed counts, label/sender lists |
-| `inboxSeedFolderMap` | Message id → original inbox folder mapping |
+| Export               | Description                                             |
+| -------------------- | ------------------------------------------------------- |
+| `inboxSeedDataset`   | Aggregate `DemoDataset` with 21 messages and 19 senders |
+| `inboxSeedMessages`  | `DemoMessage[]` — the 21 seed messages                  |
+| `inboxSeedSenders`   | `DemoSender[]` — the 19 unique senders                  |
+| `inboxSeedMetadata`  | Precomputed counts, label/sender lists                  |
+| `inboxSeedFolderMap` | Message id → original inbox folder mapping              |
 
 Helpers in `utils/inboxSeedHelpers.ts` provide pure, non-mutating queries
 (label/sender/folder filters, proof-status queries, etc.).

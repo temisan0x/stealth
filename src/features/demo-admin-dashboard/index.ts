@@ -299,7 +299,11 @@ export { messageListFixtures } from "./fixtures/messageListFixtures";
 
 // Inbox seed dataset (issue #6): fixtures, metadata, helpers, validation
 export { inboxSeedDataset, inboxSeedMessages, inboxSeedSenders } from "./fixtures/inboxSeedDataset";
-export { inboxSeedMetadata, inboxSeedFolderMap, inboxSeedFolderCounts } from "./fixtures/inboxSeedMetadata";
+export {
+  inboxSeedMetadata,
+  inboxSeedFolderMap,
+  inboxSeedFolderCounts,
+} from "./fixtures/inboxSeedMetadata";
 export type { InboxSeedMetadata } from "./fixtures/inboxSeedMetadata";
 export {
   getMessagesByLabel,

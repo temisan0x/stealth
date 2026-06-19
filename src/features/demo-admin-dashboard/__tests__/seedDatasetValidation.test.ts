@@ -13,9 +13,7 @@ describe("validateInboxSeedDataset", () => {
   it("reports missing message id", () => {
     const dataset: DemoDataset = {
       ...inboxSeedDataset,
-      messages: [
-        { ...inboxSeedMessages[0], id: "" },
-      ],
+      messages: [{ ...inboxSeedMessages[0], id: "" }],
     };
     const issues = validateInboxSeedDataset(dataset);
     expect(issues.some((i) => i.fieldPath === "messages[0].id")).toBe(true);
@@ -34,9 +32,7 @@ describe("validateInboxSeedDataset", () => {
   it("reports missing body", () => {
     const dataset: DemoDataset = {
       ...inboxSeedDataset,
-      messages: [
-        { ...inboxSeedMessages[0], body: "" },
-      ],
+      messages: [{ ...inboxSeedMessages[0], body: "" }],
     };
     const issues = validateInboxSeedDataset(dataset);
     expect(issues.some((i) => i.fieldPath === "messages[0].body")).toBe(true);
@@ -67,9 +63,7 @@ describe("validateInboxSeedDataset", () => {
     };
     const dataset: DemoDataset = {
       ...inboxSeedDataset,
-      messages: [
-        { ...inboxSeedMessages[0], sender },
-      ],
+      messages: [{ ...inboxSeedMessages[0], sender }],
     };
     const issues = validateInboxSeedDataset(dataset);
     expect(issues.some((i) => i.id?.includes("sender-domain"))).toBe(true);

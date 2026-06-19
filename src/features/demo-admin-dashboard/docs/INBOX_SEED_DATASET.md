@@ -14,43 +14,43 @@ console.log(inboxSeedDataset.id); // "inbox-seed-v1"
 console.log(inboxSeedDataset.messages.length); // 21
 
 // Precomputed metadata
-console.log(inboxSeedMetadata.totalMessages);     // 21
-console.log(inboxSeedMetadata.uniqueSenders);     // 19
+console.log(inboxSeedMetadata.totalMessages); // 21
+console.log(inboxSeedMetadata.uniqueSenders); // 19
 console.log(inboxSeedMetadata.messagesWithProof); // 13
 ```
 
 ## What is included
 
-| Export | Location | Description |
-|---|---|---|
-| `inboxSeedDataset` | `fixtures/inboxSeedDataset.ts` | Aggregate `DemoDataset` with messages + senders |
-| `inboxSeedMessages` | `fixtures/inboxSeedDataset.ts` | `DemoMessage[]` — 21 messages |
-| `inboxSeedSenders` | `fixtures/inboxSeedDataset.ts` | `DemoSender[]` — 19 unique senders |
-| `inboxSeedMetadata` | `fixtures/inboxSeedMetadata.ts` | Precomputed counts, label/sender lists |
-| `inboxSeedFolderMap` | `fixtures/inboxSeedMetadata.ts` | Message id → original inbox folder |
-| `inboxSeedFolderCounts` | `fixtures/inboxSeedMetadata.ts` | Folder → total message count |
+| Export                  | Location                        | Description                                     |
+| ----------------------- | ------------------------------- | ----------------------------------------------- |
+| `inboxSeedDataset`      | `fixtures/inboxSeedDataset.ts`  | Aggregate `DemoDataset` with messages + senders |
+| `inboxSeedMessages`     | `fixtures/inboxSeedDataset.ts`  | `DemoMessage[]` — 21 messages                   |
+| `inboxSeedSenders`      | `fixtures/inboxSeedDataset.ts`  | `DemoSender[]` — 19 unique senders              |
+| `inboxSeedMetadata`     | `fixtures/inboxSeedMetadata.ts` | Precomputed counts, label/sender lists          |
+| `inboxSeedFolderMap`    | `fixtures/inboxSeedMetadata.ts` | Message id → original inbox folder              |
+| `inboxSeedFolderCounts` | `fixtures/inboxSeedMetadata.ts` | Folder → total message count                    |
 
 ## Message coverage
 
 The 21 seed messages exercise every folder in the original demo inbox:
 
-| Folder | Count | Message IDs |
-|---|---|---|
-| priority | 1 | `seed-msg-01` |
-| verified | 1 | `seed-msg-02` |
-| pending | 1 | `seed-msg-03` |
-| inbox | 2 | `seed-msg-04`, `seed-msg-16` |
-| requests | 3 | `seed-msg-05`, `seed-msg-05b`, `seed-msg-05c` |
-| encrypted | 4 | `seed-msg-06`, `seed-msg-06b`, `seed-msg-06c`, `seed-msg-06d` |
-| receipts | 1 | `seed-msg-07` |
-| snoozed | 1 | `seed-msg-08` |
-| archive | 1 | `seed-msg-09` |
-| sent | 1 | `seed-msg-10` |
-| drafts | 1 | `seed-msg-11` |
-| scheduled | 1 | `seed-msg-12` |
-| outbox | 1 | `seed-msg-13` |
-| spam | 1 | `seed-msg-14` |
-| trash | 1 | `seed-msg-15` |
+| Folder    | Count | Message IDs                                                   |
+| --------- | ----- | ------------------------------------------------------------- |
+| priority  | 1     | `seed-msg-01`                                                 |
+| verified  | 1     | `seed-msg-02`                                                 |
+| pending   | 1     | `seed-msg-03`                                                 |
+| inbox     | 2     | `seed-msg-04`, `seed-msg-16`                                  |
+| requests  | 3     | `seed-msg-05`, `seed-msg-05b`, `seed-msg-05c`                 |
+| encrypted | 4     | `seed-msg-06`, `seed-msg-06b`, `seed-msg-06c`, `seed-msg-06d` |
+| receipts  | 1     | `seed-msg-07`                                                 |
+| snoozed   | 1     | `seed-msg-08`                                                 |
+| archive   | 1     | `seed-msg-09`                                                 |
+| sent      | 1     | `seed-msg-10`                                                 |
+| drafts    | 1     | `seed-msg-11`                                                 |
+| scheduled | 1     | `seed-msg-12`                                                 |
+| outbox    | 1     | `seed-msg-13`                                                 |
+| spam      | 1     | `seed-msg-14`                                                 |
+| trash     | 1     | `seed-msg-15`                                                 |
 
 ## Query helpers
 
@@ -65,6 +65,7 @@ const trusted = getTrustedSenders(inboxSeedSenders);
 ```
 
 Available helpers:
+
 - `getMessagesByLabel(messages, label)` — case-insensitive label filter
 - `getMessagesBySender(messages, address)` — case-insensitive sender filter
 - `getMessagesByProofStatus(messages, status)` — proof status filter
