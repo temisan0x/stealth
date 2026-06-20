@@ -3,7 +3,7 @@ import { GitMerge, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Draft } from "./types/draft";
 import { CampaignMessageAssignmentPanel } from "./components/CampaignMessageAssignmentPanel";
-import { CampaignSnapshots } from "./CampaignSnapshots";
+import { CampaignSnapshots } from "./components/CampaignSnapshots";
 import { defaultCampaignSnapshots } from "./fixtures/campaignSnapshotFixtures";
 
 export function CampaignsContent() {
@@ -11,7 +11,7 @@ export function CampaignsContent() {
     "assignments",
   );
   const [campaignDraftDataset, setCampaignDraftDataset] = useState<Draft[]>(
-    () => defaultCampaignSnapshots[0]?.data ?? [],
+    () => defaultCampaignSnapshots[0]?.drafts ?? [],
   );
 
   return (
